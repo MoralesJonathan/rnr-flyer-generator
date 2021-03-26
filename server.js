@@ -10,19 +10,23 @@ const server = require('express')(),
   { createCanvas, loadImage } = require('canvas');
 
 const generateImages = () => {
-    const portraitImagePromise = generatePortraitImage();
-    const landscapeImagePromise = generateLandscapeImage();
-    return Promise.all([portraitImagePromise,landscapeImagePromise]);
-
+  const dateOpts = {month: 'long',day: 'numeric'};
+  const dateString = new Date().toLocaleDateString('en-US', dateOpts);
+  const portraitImagePromise = generatePortraitImage(dateString);
+  const landscapeImagePromise = generateLandscapeImage(dateString);
+  return Promise.all([portraitImagePromise, landscapeImagePromise]);
 }
 
-const generatePortraitImage = () => {
+const generatePortraitImage = (date) => {
   return new Promise((resolve, reject) => {
     try{
     const portraitCanvas = createCanvas(1080, 1920);
     const portraitContext = portraitCanvas.getContext('2d');
     portraitContext.fillStyle = '#000';
     portraitContext.fillRect(0, 0, 1080, 1920);
+    portraitContext.font = '30px sans serif';
+    portraitContext.fillStyle = '#FFF';
+    portraitContext.fillText(date, 50, 100)
     resolve(portraitCanvas.createPNGStream());
     } catch(e){
       console.log(e);
@@ -31,13 +35,16 @@ const generatePortraitImage = () => {
   })
 }
 
-const generateLandscapeImage = () => {
+const generateLandscapeImage = (date) => {
   return new Promise((resolve, reject) => {
     try{
     const landscapeCanvas = createCanvas(828, 828);
     const landscapeContext = landscapeCanvas.getContext('2d');
     landscapeContext.fillStyle = '#000';
     landscapeContext.fillRect(0, 0, 828, 828);
+    landscapeContext.font = '30px sans serif';
+    landscapeContext.fillStyle = '#FFF';
+    landscapeContext.fillText(date, 50, 100)
     resolve(landscapeCanvas.createPNGStream());
     } catch(e){
       console.log(e);
