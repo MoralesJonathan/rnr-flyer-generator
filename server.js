@@ -1,3 +1,5 @@
+const e = require('express');
+
 require('dotenv').config();
 const server = require('express')(),
   port = process.env.PORT || 8080,
@@ -15,9 +17,11 @@ environment == 'development' ? server.use(logger('dev')) : server.use(logger('sh
 
 const generateImages = bgPhotoBuff => {
   const dateOpts = {month: 'long',day: 'numeric'};
-  const dateString = new Date().toLocaleDateString('en-US', dateOpts);
-  const portraitImagePromise = generatePortraitImage(dateString, bgPhotoBuff);
-  const landscapeImagePromise = generateLandscapeImage(dateString, bgPhotoBuff);
+  const date = new Date().toLocaleDateString('en-US', dateOpts);
+  const dateString = date.toLowerCase().trim();
+  const formattedDateString = formatDate(dateString);
+  const portraitImagePromise = generatePortraitImage(formattedDateString, bgPhotoBuff);
+  const landscapeImagePromise = generateLandscapeImage(formattedDateString, bgPhotoBuff);
   return Promise.all([portraitImagePromise, landscapeImagePromise]);
 }
 
@@ -29,9 +33,9 @@ const generatePortraitImage = (date, bgPhotoBuff) => {
     context.fillStyle = '#000';
     context.fillRect(0, 0, 1080, 1920);
     createBackgroundImageScaled(context, bgPhotoBuff);
-    context.font = '30px sans serif';
+    context.font = '35px sans serif';
     context.fillStyle = '#FFF';
-    context.fillText(date, 50, 100)
+    context.fillText(date, 250, 833)
     resolve(canvas.createPNGStream());
     } catch(e){
       console.log(e);
@@ -48,9 +52,9 @@ const generateLandscapeImage = (date, bgPhotoBuff) => {
     context.fillStyle = '#000';
     context.fillRect(0, 0, 828, 828);
     createBackgroundImageScaled(context, bgPhotoBuff);
-    context.font = '30px sans serif';
+    context.font = '22px sans serif';
     context.fillStyle = '#FFF';
-    context.fillText(date, 50, 100)
+    context.fillText(date, 420, 150)
     resolve(canvas.createPNGStream());
     } catch(e){
       console.log(e);
@@ -106,6 +110,29 @@ const createBackgroundImageScaled = (context, imageBuffer) => {
   context.drawImage(img, cx, cy, cw, ch, x, y, canvasWidth, canvasHeight);
 }
 
+const formatDate = dateStr => {
+  const [month, dayStr] = dateStr.split(' ');
+  const day = parseInt(dayStr);
+  let formatted = `${month} ${day}`;
+  if(day > 9 && day < 20){
+    formatted += 'th';
+  } else {
+    switch(dayStr.slice(-1)) {
+      case '1':
+          formatted += 'st';
+          break;
+      case '2':
+          formatted += 'nd';
+          break;
+      case '3':
+          formatted += 'rd';
+          break;
+      default:
+          formatted += 'th';
+    }
+  }
+  return formatted;
+}
 server
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({
