@@ -5,25 +5,30 @@ const server = require('express')(),
   logger = require('morgan'),
   fs = require('fs'),
   path = require('path'),
-  bodyParser = require('body-parser');
-  environment == 'development' ? server.use(logger('dev')) : server.use(logger('short')),
-  { createCanvas, loadImage } = require('canvas');
+  bodyParser = require('body-parser'),
+  multer  = require('multer'),
+  multerStorage = multer.memoryStorage(),
+  photoUpload = multer({ storage: multerStorage }),
+  { createCanvas, Image } = require('canvas');
 
-const generateImages = () => {
+environment == 'development' ? server.use(logger('dev')) : server.use(logger('short'));
+
+const generateImages = bgPhotoBuff => {
   const dateOpts = {month: 'long',day: 'numeric'};
   const dateString = new Date().toLocaleDateString('en-US', dateOpts);
-  const portraitImagePromise = generatePortraitImage(dateString);
-  const landscapeImagePromise = generateLandscapeImage(dateString);
+  const portraitImagePromise = generatePortraitImage(dateString, bgPhotoBuff);
+  const landscapeImagePromise = generateLandscapeImage(dateString, bgPhotoBuff);
   return Promise.all([portraitImagePromise, landscapeImagePromise]);
 }
 
-const generatePortraitImage = (date) => {
+const generatePortraitImage = (date, bgPhotoBuff) => {
   return new Promise((resolve, reject) => {
     try{
     const canvas = createCanvas(1080, 1920);
     const context = canvas.getContext('2d');
     context.fillStyle = '#000';
     context.fillRect(0, 0, 1080, 1920);
+    createBackgroundImage(context, bgPhotoBuff);
     context.font = '30px sans serif';
     context.fillStyle = '#FFF';
     context.fillText(date, 50, 100)
@@ -35,13 +40,14 @@ const generatePortraitImage = (date) => {
   })
 }
 
-const generateLandscapeImage = (date) => {
+const generateLandscapeImage = (date, bgPhotoBuff) => {
   return new Promise((resolve, reject) => {
     try{
     const canvas = createCanvas(828, 828);
     const context = canvas.getContext('2d');
     context.fillStyle = '#000';
     context.fillRect(0, 0, 828, 828);
+    createBackgroundImage(context, bgPhotoBuff);
     context.font = '30px sans serif';
     context.fillStyle = '#FFF';
     context.fillText(date, 50, 100)
@@ -52,17 +58,32 @@ const generateLandscapeImage = (date) => {
     }
   })
 }
+
+const createBackgroundImage = (context, imageBuffer) => {
+  const bg = new Image();
+  bg.onload = () => context.drawImage(bg, 0, 0);
+  bg.onerror = err => { throw err };
+  bg.src = imageBuffer;
+  return bg;
+}
+
 server
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({
     extended: true
   }))
 
-  .get('/', async function(req, res) {
-    const [portraitStream, landscapeStream] = await generateImages();
+  .get('/', function(req, res) {
+    res.send('Hello world!');
+  })
+
+  .post('/', photoUpload.single('background'), async function(req, res) {
+    const backgroundPhoto = req.file;
+    const backgroundPhotoBuff = backgroundPhoto.buffer;
+    const [portraitStream, landscapeStream] = await generateImages(backgroundPhotoBuff);
     portraitStream.pipe(fs.createWriteStream(path.join(__dirname, 'portrait.png')));
     landscapeStream.pipe(fs.createWriteStream(path.join(__dirname, 'landscape.png')));
-    res.send('Hello world!');
+    res.send('Done!');
   })
 
   .listen(port, () => {
