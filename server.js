@@ -28,7 +28,7 @@ const generatePortraitImage = (date, bgPhotoBuff) => {
     const context = canvas.getContext('2d');
     context.fillStyle = '#000';
     context.fillRect(0, 0, 1080, 1920);
-    createBackgroundImage(context, bgPhotoBuff);
+    createBackgroundImageScaled(context, bgPhotoBuff);
     context.font = '30px sans serif';
     context.fillStyle = '#FFF';
     context.fillText(date, 50, 100)
@@ -47,7 +47,7 @@ const generateLandscapeImage = (date, bgPhotoBuff) => {
     const context = canvas.getContext('2d');
     context.fillStyle = '#000';
     context.fillRect(0, 0, 828, 828);
-    createBackgroundImage(context, bgPhotoBuff);
+    createBackgroundImageScaled(context, bgPhotoBuff);
     context.font = '30px sans serif';
     context.fillStyle = '#FFF';
     context.fillText(date, 50, 100)
@@ -59,12 +59,51 @@ const generateLandscapeImage = (date, bgPhotoBuff) => {
   })
 }
 
-const createBackgroundImage = (context, imageBuffer) => {
-  const bg = new Image();
-  bg.onload = () => context.drawImage(bg, 0, 0);
-  bg.onerror = err => { throw err };
-  bg.src = imageBuffer;
-  return bg;
+const createBackgroundImageScaled = (context, imageBuffer) => {
+  // source: https://bit.ly/2Px8WQK
+  const x = 0;
+  const y = 0;
+  const canvasWidth = context.canvas.width;
+  const canvasHeight = context.canvas.height;
+
+  const img = new Image();
+  img.src = imageBuffer;
+
+  const imgWidth = img.width;
+  const imgHeight = img.height;
+  const r = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight);
+  let newWidth = imgWidth * r;
+  let newHeight = imgHeight * r;
+  let cx = 1;
+  let cy = 1;
+  let cw = 1;
+  let ch = 1;
+  let ar = 1;
+
+  // decide which gap to fill    
+  if (newWidth < canvasWidth) {
+    ar = canvasWidth / newWidth;   
+  }                          
+  if (Math.abs(ar - 1) < 1e-14 && newHeight < canvasHeight){
+    ar = canvasHeight / newHeight;
+  }
+  newWidth *= ar;
+  newHeight *= ar;
+
+  // calc source rectangle
+  cw = imgWidth / (newWidth / canvasWidth);
+  ch = imgHeight / (newHeight / canvasHeight);
+
+  cx = (imgWidth - cw);
+  cy = (imgHeight - ch);
+
+  // make sure source rectangle is valid
+  if (cx < 0) cx = 0;
+  if (cy < 0) cy = 0;
+  if (cw > imgWidth) cw = imgWidth;
+  if (ch > imgHeight) ch = imgHeight;
+
+  context.drawImage(img, cx, cy, cw, ch, x, y, canvasWidth, canvasHeight);
 }
 
 server
