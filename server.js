@@ -13,17 +13,17 @@ const server = require('express')(),
 
 environment == 'development' ? server.use(logger('dev')) : server.use(logger('short'));
 
-const generateImages = bgPhotoBuff => {
+const generateImages = (bgPhotoBuff, lineup) => {
   const dateOpts = {month: 'long',day: 'numeric'};
   const date = new Date().toLocaleDateString('en-US', dateOpts);
   const dateString = date.toLowerCase().trim();
   const formattedDateString = formatDate(dateString);
-  const portraitImagePromise = generatePortraitImage(formattedDateString, bgPhotoBuff);
-  const landscapeImagePromise = generateLandscapeImage(formattedDateString, bgPhotoBuff);
+  const portraitImagePromise = generatePortraitImage(formattedDateString, bgPhotoBuff, lineup);
+  const landscapeImagePromise = generateLandscapeImage(formattedDateString, bgPhotoBuff, lineup);
   return Promise.all([portraitImagePromise, landscapeImagePromise]);
 }
 
-const generatePortraitImage = (date, bgPhotoBuff) => {
+const generatePortraitImage = (date, bgPhotoBuff, lineup) => {
   return new Promise((resolve, reject) => {
     try{
     const canvas = createCanvas(1080, 1920);
@@ -35,6 +35,7 @@ const generatePortraitImage = (date, bgPhotoBuff) => {
     context.font = '35px sans serif';
     context.fillStyle = '#FFF';
     context.fillText(date, 250, 833)
+    setLineup(lineup, context, 700, 900);
     resolve(canvas.createPNGStream());
     } catch(e){
       console.log(e);
@@ -43,7 +44,7 @@ const generatePortraitImage = (date, bgPhotoBuff) => {
   })
 }
 
-const generateLandscapeImage = (date, bgPhotoBuff) => {
+const generateLandscapeImage = (date, bgPhotoBuff, lineup) => {
   return new Promise((resolve, reject) => {
     try{
     const canvas = createCanvas(828, 828);
@@ -55,12 +56,29 @@ const generateLandscapeImage = (date, bgPhotoBuff) => {
     context.font = '22px sans serif';
     context.fillStyle = '#FFF';
     context.fillText(date, 420, 150)
+    setLineup(lineup, context, 350, 350);
     resolve(canvas.createPNGStream());
     } catch(e){
       console.log(e);
       reject(e);
     }
   })
+}
+
+const setLineup = (lineup, context, sectionHeight, startY) => {
+  const x = context.canvas.width < 1000 ? 175: 200;
+  const rows = lineup.split('\n');
+  const fontSize = sectionHeight < 600? 30:40;
+  context.font = `bold ${fontSize}px sans serif`;
+  const lineSpace = (75/100) * fontSize;
+  const lineHeight = fontSize + lineSpace;
+  const lineupHeight = (lineHeight * rows.length) - lineSpace;
+  const topPadding = (sectionHeight - lineupHeight) / 2;
+  let y = startY + topPadding;
+  for(let row of rows) {
+    context.fillText(row, x, y);
+    y += lineHeight;
+  }
 }
 
 const setTemplate = async (size, context) => {
@@ -153,8 +171,9 @@ server
 
   .post('/', photoUpload.single('background'), async function(req, res) {
     const backgroundPhoto = req.file;
+    const { lineup } = req.body;
     const backgroundPhotoBuff = backgroundPhoto.buffer;
-    const [portraitStream, landscapeStream] = await generateImages(backgroundPhotoBuff);
+    const [portraitStream, landscapeStream] = await generateImages(backgroundPhotoBuff, lineup);
     portraitStream.pipe(fs.createWriteStream(path.join(__dirname, 'portrait.png')));
     landscapeStream.pipe(fs.createWriteStream(path.join(__dirname, 'landscape.png')));
     res.send('Done!');
