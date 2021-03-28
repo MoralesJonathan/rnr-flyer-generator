@@ -173,6 +173,37 @@ const formatDate = dateStr => {
   }
   return formatted;
 }
+
+const streamToBase64 = (portraitStream, landscapeStream) => {
+  return new Promise((resolveMain, rejectMain) => {
+    const portraitPromise = new Promise((resolve, reject) => {
+      let portraitData = '';
+      portraitStream.on('readable', () => {
+        portraitData += portraitStream.read().toString('base64');
+      });
+      portraitStream.on('end', () => {
+        resolve(portraitData);
+      });
+    })
+    const landscapePromise = new Promise((resolve, reject) => {
+      let landscapeData = '';
+      landscapeStream.on('readable', () => {
+        landscapeData += landscapeStream.read().toString('base64');
+      });
+      landscapeStream.on('end', () => {
+        resolve(landscapeData);
+      });
+    })
+    Promise.all([portraitPromise, landscapePromise])
+    .then((values) => {
+      resolveMain(values);
+    })
+    .catch(error => {
+      rejectMain(error);
+    })
+  })
+}
+
 server
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({
@@ -192,9 +223,8 @@ server
     }
     const backgroundPhotoBuff = backgroundPhoto.buffer;
     const [portraitStream, landscapeStream] = await generateImages(backgroundPhotoBuff, lineup);
-    portraitStream.pipe(fs.createWriteStream(path.join(__dirname, 'portrait.png')));
-    landscapeStream.pipe(fs.createWriteStream(path.join(__dirname, 'landscape.png')));
-    res.send('Done!');
+    const images = await streamToBase64(portraitStream, landscapeStream);
+    res.send(images);
   })
 
   .listen(port, () => {

@@ -50,6 +50,27 @@
                          <img src="contentTeam.svg">
                     </div>
                </div>
+               <div>
+                    <div class="uk-card uk-card-body uk-text-center">
+                         <div id="loading">
+                              <p>Generating Flyers... </p>
+                              <div uk-spinner></div>
+                              <p>Please wait</p>
+                         </div>
+                         <div id="flyers">
+                              <h3>Flyers ready for download! Click on the button to download both flyers</h3>
+                              <div id="flyerContainer" uk-grid>
+                                   <div class="uk-width-1-2">
+                                        <img class="flyerPreview" id="flyer1" src=""/>
+                                   </div>
+                                   <div class="uk-width-1-2">
+                                        <img class="flyerPreview" id="flyer2" src=""/>
+                                   </div>
+                              </div>
+                              <button class="uk-button" id="download">Download Now</button>
+                         </div>
+                     </div>
+               </div>
           </div>
      </div>
           <nav class="uk-container uk-container-large uk-navbar-transparent" uk-navbar>
