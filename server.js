@@ -8,6 +8,7 @@ const express = require('express'),
   path = require('path'),
   bodyParser = require('body-parser'),
   multer  = require('multer'),
+  Zip = require('adm-zip'),
   multerStorage = multer.memoryStorage(),
   photoUpload = multer({ storage: multerStorage }),
   djFlags = require('./flags'),
@@ -224,6 +225,10 @@ server
     const backgroundPhotoBuff = backgroundPhoto.buffer;
     const [portraitStream, landscapeStream] = await generateImages(backgroundPhotoBuff, lineup);
     const images = await streamToBase64(portraitStream, landscapeStream);
+    const zip = new Zip();
+    zip.addFile("story.png", Buffer.from(images[0], 'base64'));
+    zip.addFile("post.png",  Buffer.from(images[1], 'base64'));
+    zip.writeZip("public/files.zip");
     res.send(images);
   })
 

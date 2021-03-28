@@ -6,6 +6,7 @@
   "repository": "https://github.com/MoralesJonathan/rnr-flyer-generator",
   "author": "Jonathan Morales <jonmoMoralesJonathanrazav@yahoo.com>",
   "dependencies": {
+    "adm-zip": "^0.5.4",
     "body-parser": "^1.19.0",
     "canvas": "^2.7.0",
     "express": "^4.17.1",
