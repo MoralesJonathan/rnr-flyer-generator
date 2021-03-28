@@ -9,6 +9,7 @@ const server = require('express')(),
   multer  = require('multer'),
   multerStorage = multer.memoryStorage(),
   photoUpload = multer({ storage: multerStorage }),
+  djFlags = require('./flags'),
   { createCanvas, Image, loadImage } = require('canvas');
 
 environment == 'development' ? server.use(logger('dev')) : server.use(logger('short'));
@@ -66,7 +67,6 @@ const generateLandscapeImage = (date, bgPhotoBuff, lineup) => {
 }
 
 const setLineup = (lineup, context, sectionHeight, startY) => {
-  const x = context.canvas.width < 1000 ? 175: 200;
   const rows = lineup.split('\n');
   const fontSize = sectionHeight < 600? 30:40;
   context.font = `bold ${fontSize}px sans serif`;
@@ -74,9 +74,19 @@ const setLineup = (lineup, context, sectionHeight, startY) => {
   const lineHeight = fontSize + lineSpace;
   const lineupHeight = (lineHeight * rows.length) - lineSpace;
   const topPadding = (sectionHeight - lineupHeight) / 2;
+  const center = context.canvas.width / 2;
   let y = startY + topPadding;
+  const x = center - 50;
   for(let row of rows) {
-    context.fillText(row, x, y);
+    const [time, dj] = row.split('\t');
+    context.textAlign = 'right';
+    context.fillText(`${time}  `, x, y);
+    const flag = new Image();
+    flag.onload = () => context.drawImage(flag, x + 40, y - (fontSize - 5), fontSize, fontSize)
+    flag.onerror = err => { console.log(err) }
+    flag.src = `flags/${djFlags[dj]}.png`;
+    context.textAlign = 'left';
+    context.fillText(dj, x + (sectionHeight < 600? 80: 90), y);
     y += lineHeight;
   }
 }
