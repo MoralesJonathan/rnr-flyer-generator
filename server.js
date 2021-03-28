@@ -186,6 +186,9 @@ server
   .post('/', photoUpload.single('background'), async function(req, res) {
     const backgroundPhoto = req.file;
     const { lineup } = req.body;
+    if(!lineup || !backgroundPhoto){
+      return res.status(400).send('Missing photo or lineup');
+    }
     const backgroundPhotoBuff = backgroundPhoto.buffer;
     const [portraitStream, landscapeStream] = await generateImages(backgroundPhotoBuff, lineup);
     portraitStream.pipe(fs.createWriteStream(path.join(__dirname, 'portrait.png')));
