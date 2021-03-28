@@ -1,5 +1,6 @@
 require('dotenv').config();
-const server = require('express')(),
+const express = require('express'),
+  server = express(),
   port = process.env.PORT || 8080,
   environment = server.get('env'),
   logger = require('morgan'),
@@ -176,9 +177,10 @@ server
   .use(bodyParser.urlencoded({
     extended: true
   }))
+  .use(express.static('public'))
 
   .get('/', function(req, res) {
-    res.send('Hello world!');
+    res.send('index');
   })
 
   .post('/', photoUpload.single('background'), async function(req, res) {
