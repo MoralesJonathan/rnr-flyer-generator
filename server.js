@@ -70,7 +70,7 @@ const setLineup = (lineup, context, sectionHeight, startY) => {
   const rows = lineup.split('\n');
   const fontSize = sectionHeight < 600? 30:40;
   context.font = `bold ${fontSize}px sans serif`;
-  const lineSpace = (75/100) * fontSize;
+  const lineSpace = ((sectionHeight < 600? 75:95)/100) * fontSize;
   const lineHeight = fontSize + lineSpace;
   const lineupHeight = (lineHeight * rows.length) - lineSpace;
   const topPadding = (sectionHeight - lineupHeight) / 2;
@@ -134,6 +134,8 @@ const createBackgroundImageScaled = (context, imageBuffer) => {
   if (ch > imgHeight) ch = imgHeight;
 
   context.drawImage(img, cx, cy, cw, ch, x, y, canvasWidth, canvasHeight);
+  context.fillStyle = "rgba(0, 0, 0, 0.4)";
+  context.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
 const formatDate = dateStr => {
