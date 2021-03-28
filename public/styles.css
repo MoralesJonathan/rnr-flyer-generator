@@ -57,3 +57,8 @@ p {
 #flyerContainer {
      margin: 50px
 }
+
+#flyer-section {
+     margin: 50px;
+     display: none;
+}

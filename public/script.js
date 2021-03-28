@@ -2,10 +2,14 @@
      const form = document.getElementById('form');
      form.addEventListener('submit', event => {
           event.preventDefault();
+          const flyerSection = document.getElementById('flyer-section');
+          flyerSection.style.display = 'block';
           const submitBtn = document.getElementById('submit');
           submitBtn.disabled = true;
           const loading = document.getElementById('loading');
+          const flyers = document.getElementById('flyers');
           loading.style.display = 'block';
+          flyers.style.display = 'none';
           fetch('/',{
                method: 'POST',
                body: new FormData(form)
@@ -18,7 +22,6 @@
                data = JSON.parse(data);
                flyer1.src = `data:image/png;base64, ${data[0]}`;
                flyer2.src = `data:image/png;base64, ${data[1]}`
-               const flyers = document.getElementById('flyers');
                flyers.style.display = 'block';
                submitBtn.disabled = false;
           })
