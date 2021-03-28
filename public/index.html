@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+     <title>Title</title>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.18/dist/css/uikit.min.css" />
+     <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.18/dist/js/uikit.min.js"></script>
+     <link rel="preconnect" href="https://fonts.gstatic.com">
+     <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500&display=swap" rel="stylesheet">
+     <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+     <nav class="uk-container uk-container-large uk-navbar-transparent" uk-navbar>
+          <div class="uk-navbar-left">
+               <a class="uk-navbar-item uk-logo" href="#">Logo</a>
+          </div>
+          <div class="uk-navbar-right">
+               <ul class="uk-navbar-nav">
+                    <li class="uk-active"><a href="#">Home</a></li>
+                    <li class="uk-active"><a href="#">Discord</a></li>
+               </ul>
+          </div>
+     </nav>
+     <div class="uk-section" uk-height-viewport="expand: true">
+          <div class="uk-container">
+               <div uk-grid>
+                    <div class="uk-width-1-2">
+                         <h1 style="font-weight: 500;">Generate RNR Flyer Here</h1>
+                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean consequat viverra risus, non
+                              elementum lorem faucibus eu. Etiam et purus nec nulla molestie volutpat id eget tortor. Sed
+                              tincidunt tempus leo, et dignissim nulla lobortis et. Integer aliquam suscipit ullamcorper.</p>
+                         <form class="uk-form" id="form">
+                              <div class="uk-margin">
+                                   <textarea class="uk-textarea" rows="5" placeholder="Paste lineup from Google Sheets"></textarea>
+                              </div>
+                              <div class="uk-margin" uk-margin>
+                                   <div uk-form-custom="target: true">
+                                        <input type="file">
+                                        <input class="uk-input uk-form-width-medium" type="text" placeholder="Select file"
+                                             disabled>
+                                   </div>
+                                   <button id="submit" class="uk-button uk-button-default">Submit</button>
+                              </div>
+                         </form>
+                    </div>
+                    <div class="uk-width-1-2">
+                         <img src="contentTeam.svg">
+                    </div>
+               </div>
+          </div>
+     </div>
+          <nav class="uk-container uk-container-large uk-navbar-transparent" uk-navbar>
+               <div class="uk-navbar-left">
+                    <a class="uk-navbar-item uk-logo" href="#">Fake Company</a>
+               </div>
+               <div class="uk-navbar-right">
+                    <ul class="uk-navbar-nav">
+                         <li class="uk-active"><a href="#">©2021 Jonathan Morales</a></li>
+                    </ul>
+               </div>
+          </nav>
+          <script src="script.js"></script>
+</body>
+
+</html>
