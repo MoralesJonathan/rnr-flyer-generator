@@ -1,5 +1,3 @@
-const e = require('express');
-
 require('dotenv').config();
 const server = require('express')(),
   port = process.env.PORT || 8080,
@@ -11,7 +9,7 @@ const server = require('express')(),
   multer  = require('multer'),
   multerStorage = multer.memoryStorage(),
   photoUpload = multer({ storage: multerStorage }),
-  { createCanvas, Image } = require('canvas');
+  { createCanvas, Image, loadImage } = require('canvas');
 
 environment == 'development' ? server.use(logger('dev')) : server.use(logger('short'));
 
@@ -33,6 +31,7 @@ const generatePortraitImage = (date, bgPhotoBuff) => {
     context.fillStyle = '#000';
     context.fillRect(0, 0, 1080, 1920);
     createBackgroundImageScaled(context, bgPhotoBuff);
+    setTemplate('portrait', context);
     context.font = '35px sans serif';
     context.fillStyle = '#FFF';
     context.fillText(date, 250, 833)
@@ -52,6 +51,7 @@ const generateLandscapeImage = (date, bgPhotoBuff) => {
     context.fillStyle = '#000';
     context.fillRect(0, 0, 828, 828);
     createBackgroundImageScaled(context, bgPhotoBuff);
+    setTemplate('landscape', context);
     context.font = '22px sans serif';
     context.fillStyle = '#FFF';
     context.fillText(date, 420, 150)
@@ -63,6 +63,14 @@ const generateLandscapeImage = (date, bgPhotoBuff) => {
   })
 }
 
+const setTemplate = async (size, context) => {
+  try {
+    const image = await loadImage(`templates/${size}.png`);
+    context.drawImage(image, 0, 0);
+  } catch(e){
+    console.log(e);
+  }
+}
 const createBackgroundImageScaled = (context, imageBuffer) => {
   // source: https://bit.ly/2Px8WQK
   const x = 0;
