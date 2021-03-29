@@ -35,7 +35,7 @@ const generatePortraitImage = (date, bgPhotoBuff, lineup) => {
     context.fillRect(0, 0, 1080, 1920);
     createBackgroundImageScaled(context, bgPhotoBuff);
     setTemplate('portrait', context);
-    context.font = '35px "Metropolis';
+    context.font = '35px "Metropolis"';
     context.fillStyle = '#FFF';
     context.fillText(date, 250, 833)
     setLineup(lineup, context, 700, 900);
