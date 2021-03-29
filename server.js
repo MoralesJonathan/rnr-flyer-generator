@@ -79,6 +79,7 @@ const setLineup = (lineup, context, sectionHeight, startY) => {
   for(let row of rows) {
     let [time, dj] = row.split('\t');
     dj = dj.replace('\r','');
+    dj = dj.toLowerCase().trim();
     context.textAlign = 'right';
     context.fillText(`${time}  `, x, y);
     const flag = new Image();
