@@ -17,8 +17,32 @@ registerFont('fonts/Metropolis-SemiBold.otf', { family: 'Metropolis Bold' });
 environment == 'development' ? server.use(logger('dev')) : server.use(logger('short'));
 
 const generateImages = (bgPhotoBuff, lineup) => {
+  const today = new Date();
+  const adjustedDate = new Date(today);
+  const todaysDay = new Date().getDay();
+  let dayAdjust = 0;
+  switch(todaysDay){
+    case 0:
+      dayAdjust = 2;
+    break;
+    case 1:
+      dayAdjust = 1;
+    break;
+    case 3:
+      dayAdjust = 1;
+    break;
+    case 5:
+      dayAdjust = 4;
+    break;
+    case 6:
+      dayAdjust = 3;
+    break;
+    default:
+      dayAdjust = 0;
+  }
+  adjustedDate.setDate(today.getDate() + dayAdjust);
   const dateOpts = {month: 'long',day: 'numeric'};
-  const date = new Date().toLocaleDateString('en-US', dateOpts);
+  const date = adjustedDate.toLocaleDateString('en-US', dateOpts);
   const dateString = date.toLowerCase().trim();
   const formattedDateString = formatDate(dateString);
   const portraitImagePromise = generatePortraitImage(formattedDateString, bgPhotoBuff, lineup);
