@@ -26,7 +26,10 @@
                submitBtn.disabled = false;
           })
           .catch(error => {
-               alert(error)
+               alert('Unable to process your request. Please try again.');
+               console.log(error)
+               submitBtn.disabled = false;
+               flyerSection.style.display = 'none';
           }) 
      })
 })()
