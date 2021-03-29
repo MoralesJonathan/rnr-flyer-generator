@@ -1,11 +1,8 @@
-require('dotenv').config();
 const express = require('express'),
   server = express(),
   port = process.env.PORT || 8080,
   environment = server.get('env'),
   logger = require('morgan'),
-  fs = require('fs'),
-  path = require('path'),
   bodyParser = require('body-parser'),
   multer  = require('multer'),
   Zip = require('adm-zip'),
