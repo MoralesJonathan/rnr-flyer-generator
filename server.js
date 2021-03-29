@@ -37,7 +37,7 @@ const generatePortraitImage = (date, bgPhotoBuff, lineup) => {
     setTemplate('portrait', context);
     context.font = '35px "Metropolis"';
     context.fillStyle = '#FFF';
-    context.fillText(date, 250, 833)
+    context.fillText(date, 235, 833)
     setLineup(lineup, context, 700, 900);
     resolve(canvas.createPNGStream());
     } catch(e){
