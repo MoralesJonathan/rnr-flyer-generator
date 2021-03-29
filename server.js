@@ -10,8 +10,10 @@ const express = require('express'),
   multerStorage = multer.memoryStorage(),
   photoUpload = multer({ storage: multerStorage }),
   djFlags = require('./flags'),
-  { createCanvas, Image, loadImage } = require('canvas');
-
+  { createCanvas, Image, loadImage,registerFont } = require('canvas');
+  
+registerFont('fonts/Metropolis-Regular.otf', { family: 'Metropolis' });
+registerFont('fonts/Metropolis-SemiBold.otf', { family: 'Metropolis Bold' });
 environment == 'development' ? server.use(logger('dev')) : server.use(logger('short'));
 
 const generateImages = (bgPhotoBuff, lineup) => {
@@ -33,7 +35,7 @@ const generatePortraitImage = (date, bgPhotoBuff, lineup) => {
     context.fillRect(0, 0, 1080, 1920);
     createBackgroundImageScaled(context, bgPhotoBuff);
     setTemplate('portrait', context);
-    context.font = '35px sans serif';
+    context.font = '35px "Metropolis';
     context.fillStyle = '#FFF';
     context.fillText(date, 250, 833)
     setLineup(lineup, context, 700, 900);
@@ -54,9 +56,9 @@ const generateLandscapeImage = (date, bgPhotoBuff, lineup) => {
     context.fillRect(0, 0, 828, 828);
     createBackgroundImageScaled(context, bgPhotoBuff);
     setTemplate('landscape', context);
-    context.font = '22px sans serif';
+    context.font = '19px "Metropolis"';
     context.fillStyle = '#FFF';
-    context.fillText(date, 420, 150)
+    context.fillText(date, 420, 149)
     setLineup(lineup, context, 350, 350);
     resolve(canvas.createPNGStream());
     } catch(e){
@@ -68,8 +70,9 @@ const generateLandscapeImage = (date, bgPhotoBuff, lineup) => {
 
 const setLineup = (lineup, context, sectionHeight, startY) => {
   const rows = lineup.split('\n');
-  const fontSize = sectionHeight < 600? 30:40;
-  context.font = `bold ${fontSize}px sans serif`;
+  let fontSize = sectionHeight < 600? 30:40;
+  fontSize = rows.length > 8 ? fontSize - 5 : fontSize;
+  context.font = `${fontSize}px "Metropolis Bold"`;
   const lineSpace = ((sectionHeight < 600? 75:95)/100) * fontSize;
   const lineHeight = fontSize + lineSpace;
   const lineupHeight = (lineHeight * rows.length) - lineSpace;
