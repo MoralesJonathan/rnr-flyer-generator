@@ -103,7 +103,7 @@ const setLineup = (lineup, context, sectionHeight, startY) => {
   const topPadding = (sectionHeight - lineupHeight) / 2;
   const center = context.canvas.width / 2;
   let y = startY + topPadding;
-  const x = center - 50;
+  const x = center - 40;
   for(let row of rows) {
     let [time, dj] = row.split('\t');
     dj = dj.replace('\r','');
