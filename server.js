@@ -229,6 +229,10 @@ server
     res.send(images);
   })
 
+  .get('*', function(req, res) {
+    res.send('Derp - wrong URL there buddy. Try again.');
+  })
+
   .listen(port, () => {
     console.log(`Server is running on port ${port} and is running with a ${environment} environment.`);
   });
