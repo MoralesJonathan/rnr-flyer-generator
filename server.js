@@ -3,6 +3,7 @@ const express = require('express'),
   port = process.env.PORT || 8080,
   environment = server.get('env'),
   logger = require('morgan'),
+  fs = require('fs'),
   bodyParser = require('body-parser'),
   multer  = require('multer'),
   Zip = require('adm-zip'),
@@ -226,6 +227,11 @@ server
     const zip = new Zip();
     zip.addFile("story.png", Buffer.from(images[0], 'base64'));
     zip.addFile("post.png",  Buffer.from(images[1], 'base64'));
+    try {
+      fs.unlinkSync('public/files.zip');
+    } catch(e) {
+      //ignore
+    }
     zip.writeZip("public/files.zip");
     res.send(images);
   })
