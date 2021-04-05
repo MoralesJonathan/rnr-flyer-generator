@@ -60,8 +60,9 @@ const generatePortraitImage = (date, bgPhotoBuff, lineup) => {
     createBackgroundImageScaled(context, bgPhotoBuff);
     setTemplate('portrait', context);
     context.font = '35px "Metropolis"';
+    context.textAlign = 'left';
     context.fillStyle = '#FFF';
-    context.fillText(date, 235, 833)
+    context.fillText(date, 290, 833)
     setLineup(lineup, context, 700, 900);
     resolve(canvas.createPNGStream());
     } catch(e){
@@ -81,8 +82,9 @@ const generateLandscapeImage = (date, bgPhotoBuff, lineup) => {
     createBackgroundImageScaled(context, bgPhotoBuff);
     setTemplate('landscape', context);
     context.font = '19px "Metropolis"';
+    context.textAlign = 'left';
     context.fillStyle = '#FFF';
-    context.fillText(date, 420, 149)
+    context.fillText(date, 450, 149)
     setLineup(lineup, context, 350, 350);
     resolve(canvas.createPNGStream());
     } catch(e){
@@ -97,6 +99,7 @@ const setLineup = (lineup, context, sectionHeight, startY) => {
   let fontSize = sectionHeight < 600? 30:40;
   fontSize = rows.length > 8 ? fontSize - 5 : fontSize;
   context.font = `${fontSize}px "Metropolis Bold"`;
+  context.textAlign = 'right';
   const lineSpace = ((sectionHeight < 600? 75:95)/100) * fontSize;
   const lineHeight = fontSize + lineSpace;
   const lineupHeight = (lineHeight * rows.length) - lineSpace;
