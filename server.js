@@ -60,11 +60,11 @@ const generatePortraitImage = (date, bgPhotoBuff, lineup) => {
     createBackgroundImageScaled(context, bgPhotoBuff);
     setTemplate('portrait', context);
     context.font = '35px "Metropolis"';
-    context.textAlign = 'left';
+    context.textAlign = 'right';
     context.fillStyle = '#000';
-    context.fillText(date, 288, 834);
+    context.fillText(date, 425, 834);
     context.fillStyle = '#FFF';
-    context.fillText(date, 290, 833)
+    context.fillText(date, 427, 833)
     setLineup(lineup, context, 700, 900);
     resolve(canvas.createPNGStream());
     } catch(e){
@@ -84,11 +84,11 @@ const generateLandscapeImage = (date, bgPhotoBuff, lineup) => {
     createBackgroundImageScaled(context, bgPhotoBuff);
     setTemplate('landscape', context);
     context.font = '19px "Metropolis"';
-    context.textAlign = 'left';
+    context.textAlign = 'right';
     context.fillStyle = '#000';
-    context.fillText(date, 448, 149);
+    context.fillText(date, 520, 149);
     context.fillStyle = '#FFF';
-    context.fillText(date, 450, 149);
+    context.fillText(date, 522, 149);
     setLineup(lineup, context, 350, 350);
     resolve(canvas.createPNGStream());
     } catch(e){
